@@ -71,7 +71,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
                 padding: const EdgeInsets.all(8)),
             child: Text(
               isEdit ? 'Update' : 'Save',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -82,7 +82,43 @@ class _AddTodoPageState extends State<AddTodoPage> {
     );
   }
 
-  Future<void> updateData() async {}
+  Future<void> updateData() async {
+    // Get the data from the server
+
+    final todo = widget.todo;
+    if (todo == null) {
+      print('You can not call Update without todo data');
+      return;
+    }
+
+    final id = todo['_id'];
+    final title = titleController.text;
+    final description = descriptionController.text;
+    final body = {
+      "title": title,
+      "description": description,
+      "is_completed": false,
+    };
+
+    // Submit updated data to the server
+    final url = 'https://api.nstack.in/v1/todos/$id';
+    final uri = Uri.parse(url);
+    final response = await http.put(
+      uri,
+      body: jsonEncode(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    // Show sucess of fail message based on status
+    if (response.statusCode == 200) {
+      showSuccessMessage('Successfully updated');
+    } else {
+      showErrorMessage('Updation creation');
+    }
+  }
+
   Future<void> saveData() async {
     // TODO: Get the data from the form
 

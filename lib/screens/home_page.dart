@@ -32,11 +32,15 @@ class _HomePageState extends State<HomePage> {
     fetchTodo();
   }
 
-  void navigateToEditPage(Map item) {
+  Future<void> navigateToEditPage(Map item) async {
     final route = MaterialPageRoute(
       builder: (context) => AddTodoPage(todo: item),
     );
-    Navigator.push(context, route);
+    await Navigator.push(context, route);
+    setState(() {
+      isLoading = true;
+    });
+    fetchTodo();
   }
 
   Future<void> deleteById(String id) async {
