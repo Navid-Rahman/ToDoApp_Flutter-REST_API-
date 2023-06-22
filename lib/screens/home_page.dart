@@ -106,43 +106,55 @@ class _HomePageState extends State<HomePage> {
         visible: isLoading,
         replacement: RefreshIndicator(
           onRefresh: fetchTodo,
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index] as Map;
-              final id = item['_id'] as String;
-              return ListTile(
-                leading: CircleAvatar(
-                  child: Text('${index + 1}'),
-                ),
-                title: Text(
-                  item['title'],
-                ),
-                subtitle: Text(
-                  item['description'],
-                ),
-                trailing: PopupMenuButton(onSelected: (value) {
-                  if (value == 'edit') {
-                    // Edit page
-                    navigateToEditPage(item);
-                  } else if (value == 'delete') {
-                    // Delete page
-                    deleteById(id);
-                  }
-                }, itemBuilder: (context) {
-                  return [
-                    const PopupMenuItem(
-                      value: 'edit',
-                      child: Text('Edit'),
+          child: Visibility(
+            visible: items.isNotEmpty,
+            replacement: Center(
+              child: Text(
+                'No Todo Item',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ),
+            child: ListView.builder(
+              itemCount: items.length,
+              padding: EdgeInsets.all(8),
+              itemBuilder: (context, index) {
+                final item = items[index] as Map;
+                final id = item['_id'] as String;
+                return Card(
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      child: Text('${index + 1}'),
                     ),
-                    const PopupMenuItem(
-                      value: 'delete',
-                      child: Text('Delete'),
+                    title: Text(
+                      item['title'],
                     ),
-                  ];
-                }),
-              );
-            },
+                    subtitle: Text(
+                      item['description'],
+                    ),
+                    trailing: PopupMenuButton(onSelected: (value) {
+                      if (value == 'edit') {
+                        // Edit page
+                        navigateToEditPage(item);
+                      } else if (value == 'delete') {
+                        // Delete page
+                        deleteById(id);
+                      }
+                    }, itemBuilder: (context) {
+                      return [
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: Text('Edit'),
+                        ),
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Text('Delete'),
+                        ),
+                      ];
+                    }),
+                  ),
+                );
+              },
+            ),
           ),
         ),
         child: const Center(
