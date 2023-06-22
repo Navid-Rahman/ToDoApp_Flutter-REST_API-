@@ -21,9 +21,62 @@ class _HomePageState extends State<HomePage> {
     fetchTodo();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Todo List'),
+      ),
+      body: Visibility(
+        visible: isLoading,
+        replacement: RefreshIndicator(
+          onRefresh: fetchTodo,
+          child: Visibility(
+            visible: items.isNotEmpty,
+            replacement: Center(
+              child: Text(
+                'No Todo Item',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ),
+            child: ListView.builder(
+              itemCount: items.length,
+              padding: EdgeInsets.all(8),
+              itemBuilder: (context, index) {
+                final item = items[index] as Map;
+                final id = item['_id'] as String;
+                return TodoCard(
+                  index: index,
+                  item: item,
+                  navigateEdit: navigateToEditPage,
+                  deleteById: deleteById,
+                );
+              },
+            ),
+          ),
+        ),
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: navigateToAddPage,
+        icon: const Icon(Icons.add),
+        label: const Text(
+          'Add Todo',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        backgroundColor: const Color(0xFF05BFDB),
+      ),
+    );
+  }
+
   Future<void> navigateToAddPage() async {
     final route = MaterialPageRoute(
-      builder: (context) => const AddTodoPage(),
+      builder: (context) => AddTodoPage(),
     );
     await Navigator.push(context, route);
     setState(() {
@@ -74,57 +127,5 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       isLoading = false;
     });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Todo List'),
-      ),
-      body: Visibility(
-        visible: isLoading,
-        replacement: RefreshIndicator(
-          onRefresh: fetchTodo,
-          child: Visibility(
-            visible: items.isNotEmpty,
-            replacement: Center(
-              child: Text(
-                'No Todo Item',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ),
-            child: ListView.builder(
-              itemCount: items.length,
-              padding: EdgeInsets.all(8),
-              itemBuilder: (context, index) {
-                final item = items[index] as Map;
-                return TodoCard(
-                  index: index,
-                  item: item,
-                  navigateEdit: navigateToEditPage,
-                  deleteById: deleteById,
-                );
-              },
-            ),
-          ),
-        ),
-        child: const Center(
-          child: CircularProgressIndicator(),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: navigateToAddPage,
-        icon: const Icon(Icons.add),
-        label: const Text(
-          'Add Todo',
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        backgroundColor: const Color(0xFF05BFDB),
-      ),
-    );
   }
 }

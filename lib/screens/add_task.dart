@@ -1,23 +1,23 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:todo_restapi_flutter/services/todo_service.dart';
+import 'package:todo_restapi_flutter/utils/snackbar_helper.dart';
 
 class AddTodoPage extends StatefulWidget {
-  final Map? todo;
   const AddTodoPage({
     super.key,
     this.todo,
   });
+
+  final Map? todo;
 
   @override
   State<AddTodoPage> createState() => _AddTodoPageState();
 }
 
 class _AddTodoPageState extends State<AddTodoPage> {
-  TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   bool isEdit = false;
+  TextEditingController titleController = TextEditingController();
 
   @override
   void initState() {
@@ -31,6 +31,59 @@ class _AddTodoPageState extends State<AddTodoPage> {
 
       titleController.text = title;
       descriptionController.text = description;
+    }
+  }
+
+  Future<void> updateData() async {
+    // Get the data from the server
+
+    final todo = widget.todo;
+    if (todo == null) {
+      print('You can not call Update without todo data');
+      return;
+    }
+
+    final id = todo['_id'];
+    final title = titleController.text;
+    final description = descriptionController.text;
+    final body = {
+      "title": title,
+      "description": description,
+      "is_completed": false,
+    };
+
+    final isSuccess = await TodoService.updateTodo(id, body);
+
+    // Show sucess of fail message based on status
+    if (isSuccess) {
+      showSuccessMessage(context, message: 'Successfully updated');
+    } else {
+      showErrorMessage(context, message: 'Failed creation');
+    }
+  }
+
+  Future<void> saveData() async {
+    // TODO: Get the data from the form
+
+    final title = titleController.text;
+    final description = descriptionController.text;
+    final body = {
+      "title": title,
+      "description": description,
+      "is_completed": false,
+    };
+
+    // TODO: Save data to the server
+
+    final isSuccess = await TodoService.saveTodo(body);
+
+    // TODO: Show success or fail message based on status
+    if (isSuccess) {
+      titleController.text = '';
+      descriptionController.text = '';
+      showSuccessMessage(context, message: 'Successfully created');
+    } else {
+      showErrorMessage(context, message: 'Failed creation');
     }
   }
 
@@ -80,101 +133,5 @@ class _AddTodoPageState extends State<AddTodoPage> {
         ],
       ),
     );
-  }
-
-  Future<void> updateData() async {
-    // Get the data from the server
-
-    final todo = widget.todo;
-    if (todo == null) {
-      print('You can not call Update without todo data');
-      return;
-    }
-
-    final id = todo['_id'];
-    final title = titleController.text;
-    final description = descriptionController.text;
-    final body = {
-      "title": title,
-      "description": description,
-      "is_completed": false,
-    };
-
-    // Submit updated data to the server
-    final url = 'https://api.nstack.in/v1/todos/$id';
-    final uri = Uri.parse(url);
-    final response = await http.put(
-      uri,
-      body: jsonEncode(body),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
-
-    // Show sucess of fail message based on status
-    if (response.statusCode == 200) {
-      showSuccessMessage('Successfully updated');
-    } else {
-      showErrorMessage('Updation creation');
-    }
-  }
-
-  Future<void> saveData() async {
-    // TODO: Get the data from the form
-
-    final title = titleController.text;
-    final description = descriptionController.text;
-    final body = {
-      "title": title,
-      "description": description,
-      "is_completed": false,
-    };
-
-    // TODO: Save data to the server
-
-    const url = 'https://api.nstack.in/v1/todos';
-    final uri = Uri.parse(url);
-    final response = await http.post(
-      uri,
-      body: jsonEncode(body),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
-
-    // TODO: Show success or fail message based on status
-    if (response.statusCode == 201) {
-      titleController.text = '';
-      descriptionController.text = '';
-      showSuccessMessage('Successfully created');
-    } else {
-      showErrorMessage('Failed creation');
-    }
-  }
-
-  void showSuccessMessage(String message) {
-    final snackBar = SnackBar(
-      content: Text(
-        message,
-        style: const TextStyle(
-          color: Colors.black,
-        ),
-      ),
-      backgroundColor: Colors.white,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-  void showErrorMessage(String message) {
-    final snackBar = SnackBar(
-      content: Text(
-        message,
-        style: const TextStyle(
-          color: Colors.white,
-        ),
-      ),
-      backgroundColor: Colors.red,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

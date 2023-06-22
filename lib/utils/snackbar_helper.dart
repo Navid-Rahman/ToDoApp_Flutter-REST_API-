@@ -15,3 +15,19 @@ void showErrorMessage(
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
+
+void showSuccessMessage(
+  BuildContext context, {
+  required String message,
+}) {
+  final snackBar = SnackBar(
+    content: Text(
+      message,
+      style: const TextStyle(
+        color: Colors.black,
+      ),
+    ),
+    backgroundColor: Colors.white,
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}

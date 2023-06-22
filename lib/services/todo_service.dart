@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 // All todo API call
@@ -25,5 +23,35 @@ class TodoService {
     } else {
       return null;
     }
+  }
+
+  static Future<bool> updateTodo(String id, Map body) async {
+    // Submit updated data to the server
+    final url = 'https://api.nstack.in/v1/todos/$id';
+    final uri = Uri.parse(url);
+    final response = await http.put(
+      uri,
+      body: jsonEncode(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    return response.statusCode == 200;
+  }
+
+  static Future<bool> saveTodo(Map body) async {
+    // Submit updated data to the server
+    const url = 'https://api.nstack.in/v1/todos';
+    final uri = Uri.parse(url);
+    final response = await http.post(
+      uri,
+      body: jsonEncode(body),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    return response.statusCode == 201;
   }
 }
