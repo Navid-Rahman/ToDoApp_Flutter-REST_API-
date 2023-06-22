@@ -41,10 +41,9 @@ class _HomePageState extends State<HomePage> {
             ),
             child: ListView.builder(
               itemCount: items.length,
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               itemBuilder: (context, index) {
                 final item = items[index] as Map;
-                final id = item['_id'] as String;
                 return TodoCard(
                   index: index,
                   item: item,
@@ -69,14 +68,14 @@ class _HomePageState extends State<HomePage> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        backgroundColor: const Color(0xFF05BFDB),
+        // backgroundColor: const Color(0xFF05BFDB),
       ),
     );
   }
 
   Future<void> navigateToAddPage() async {
     final route = MaterialPageRoute(
-      builder: (context) => AddTodoPage(),
+      builder: (context) => const AddTodoPage(),
     );
     await Navigator.push(context, route);
     setState(() {

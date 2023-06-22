@@ -115,18 +115,14 @@ class _AddTodoPageState extends State<AddTodoPage> {
             maxLines: 8,
           ),
           const SizedBox(
-            height: 12,
+            height: 32,
           ),
           ElevatedButton(
             onPressed: isEdit ? updateData : saveData,
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF05BFDB),
-                padding: const EdgeInsets.all(8)),
             child: Text(
               isEdit ? 'Update' : 'Save',
               style: const TextStyle(
                 fontSize: 20,
-                fontWeight: FontWeight.bold,
               ),
             ),
           ),
