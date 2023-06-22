@@ -66,7 +66,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
 
     // TODO: Save data to the server
 
-    final url = 'https://api.nstack.in/v1/todos';
+    const url = 'https://api.nstack.in/v1/todos';
     final uri = Uri.parse(url);
     final response = await http.post(
       uri,
@@ -77,7 +77,38 @@ class _AddTodoPageState extends State<AddTodoPage> {
     );
 
     // TODO: Show success or fail message based on status
-    print(response.statusCode);
-    print(response.body);
+    if (response.statusCode == 201) {
+      titleController.text = '';
+      descriptionController.text = '';
+      showSuccessMessage('Successfully created');
+    } else {
+      showErrorMessage('Failed creation');
+    }
+  }
+
+  void showSuccessMessage(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+          color: Colors.black,
+        ),
+      ),
+      backgroundColor: Colors.white,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void showErrorMessage(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      backgroundColor: Colors.red,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
