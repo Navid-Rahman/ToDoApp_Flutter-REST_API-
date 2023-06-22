@@ -32,9 +32,9 @@ class _HomePageState extends State<HomePage> {
     fetchTodo();
   }
 
-  void navigateToEditPage() {
+  void navigateToEditPage(Map item) {
     final route = MaterialPageRoute(
-      builder: (context) => const AddTodoPage(),
+      builder: (context) => AddTodoPage(todo: item),
     );
     Navigator.push(context, route);
   }
@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                 trailing: PopupMenuButton(onSelected: (value) {
                   if (value == 'edit') {
                     // Edit page
-                    navigateToEditPage();
+                    navigateToEditPage(item);
                   } else if (value == 'delete') {
                     // Delete page
                     deleteById(id);
@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        backgroundColor: const Color(0xFF79E0EE),
+        backgroundColor: const Color(0xFF05BFDB),
       ),
     );
   }

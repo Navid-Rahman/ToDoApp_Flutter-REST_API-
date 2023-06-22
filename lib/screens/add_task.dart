@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class AddTodoPage extends StatefulWidget {
-  const AddTodoPage({super.key});
+  final Map? todo;
+  const AddTodoPage({
+    super.key,
+    this.todo,
+  });
 
   @override
   State<AddTodoPage> createState() => _AddTodoPageState();
@@ -13,12 +17,22 @@ class AddTodoPage extends StatefulWidget {
 class _AddTodoPageState extends State<AddTodoPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  bool isEdit = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.todo != null) {
+      isEdit = true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Todo'),
+        title: Text(isEdit ? 'Edit Todo' : 'Add Todo'),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -47,10 +61,10 @@ class _AddTodoPageState extends State<AddTodoPage> {
           ElevatedButton(
             onPressed: saveData,
             style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF79E0EE),
+                backgroundColor: const Color(0xFF05BFDB),
                 padding: const EdgeInsets.all(8)),
-            child: const Text(
-              'Save',
+            child: Text(
+              isEdit ? 'Update' : 'Save',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
