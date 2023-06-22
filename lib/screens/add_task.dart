@@ -23,8 +23,14 @@ class _AddTodoPageState extends State<AddTodoPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (widget.todo != null) {
+    final todo = widget.todo;
+    if (todo != null) {
       isEdit = true;
+      final title = todo['title'];
+      final description = todo['description'];
+
+      titleController.text = title;
+      descriptionController.text = description;
     }
   }
 
@@ -59,7 +65,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
             height: 12,
           ),
           ElevatedButton(
-            onPressed: saveData,
+            onPressed: isEdit ? updateData : saveData,
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF05BFDB),
                 padding: const EdgeInsets.all(8)),
@@ -76,6 +82,7 @@ class _AddTodoPageState extends State<AddTodoPage> {
     );
   }
 
+  Future<void> updateData() async {}
   Future<void> saveData() async {
     // TODO: Get the data from the form
 
