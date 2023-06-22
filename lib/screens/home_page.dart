@@ -21,7 +21,18 @@ class _HomePageState extends State<HomePage> {
     fetchTodo();
   }
 
-  void navigateToAddPage() {
+  Future<void> navigateToAddPage() async {
+    final route = MaterialPageRoute(
+      builder: (context) => const AddTodoPage(),
+    );
+    await Navigator.push(context, route);
+    setState(() {
+      isLoading = true;
+    });
+    fetchTodo();
+  }
+
+  void navigateToEditPage() {
     final route = MaterialPageRoute(
       builder: (context) => const AddTodoPage(),
     );
@@ -30,9 +41,20 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> deleteById(String id) async {
     // TODO: Delete the item
-    final url = '';
+    final url = 'https://api.nstack.in/v1/todos/$id';
     final uri = Uri.parse(url);
-    final response = await http.get(uri);
+    final response = await http.delete(uri);
+
+    if (response.statusCode == 200) {
+      // Remove item from the list
+      final filtered = items.where((element) => element['_id'] != id).toList();
+      setState(() {
+        items = filtered;
+      });
+    } else {
+      // Show some error
+      showErrorMessage('Deletion Failed');
+    }
 
     //TODO: Remove the item from the current list
   }
@@ -40,7 +62,7 @@ class _HomePageState extends State<HomePage> {
   // TODO: API GET Call
 
   Future<void> fetchTodo() async {
-    const url = 'https://api.nstack.in/v1/todos?$id';
+    const url = 'https://api.nstack.in/v1/todos?page=1&limit=10';
     final uri = Uri.parse(url);
     final response = await http.get(uri);
 
@@ -50,11 +72,24 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         items = result;
       });
-    } else {}
+    }
 
     setState(() {
       isLoading = false;
     });
+  }
+
+  void showErrorMessage(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      backgroundColor: Colors.red,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -85,6 +120,7 @@ class _HomePageState extends State<HomePage> {
                 trailing: PopupMenuButton(onSelected: (value) {
                   if (value == 'edit') {
                     // Edit page
+                    navigateToEditPage();
                   } else if (value == 'delete') {
                     // Delete page
                     deleteById(id);
@@ -92,12 +128,12 @@ class _HomePageState extends State<HomePage> {
                 }, itemBuilder: (context) {
                   return [
                     const PopupMenuItem(
-                      child: Text('Edit'),
                       value: 'edit',
+                      child: Text('Edit'),
                     ),
                     const PopupMenuItem(
-                      child: Text('Delete'),
                       value: 'delete',
+                      child: Text('Delete'),
                     ),
                   ];
                 }),
