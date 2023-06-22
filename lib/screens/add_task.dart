@@ -46,7 +46,16 @@ class _AddTodoPageState extends State<AddTodoPage> {
           ),
           ElevatedButton(
             onPressed: saveData,
-            child: const Text('Save'),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF79E0EE),
+                padding: const EdgeInsets.all(8)),
+            child: const Text(
+              'Save',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ],
       ),
